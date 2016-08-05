@@ -5,59 +5,54 @@
     .module('bestdeal')
     .controller('MainController', MainController);
 
-  /** @ngInject */
-  function MainController($timeout, webDevTec, toastr, $scope, $window) {
-    var vm = this;
+    /** @ngInject */
+    function MainController($timeout, webDevTec, toastr, $window, $scope, $mdSidenav, $log) {
+      var vm = this;
+      $scope.toggleRight = buildToggler;
+      vm.products = [
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra1.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra2.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra3.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra4.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra5.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra6.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra7.jpg'
+    },
+    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra8.jpg'
+    }
+    ];
 
-    vm.awesomeThings = [];
-    vm.classAnimation = '';
-    vm.creationDate = 1470059445439;
-    vm.showToastr = showToastr;
+    $scope.close = function () {
+       // Component lookup should always be available since we are not using `ng-if`
+       $mdSidenav('right').close()
+         .then(function () {
+           $log.debug("close RIGHT is done");
+          $scope.sidenavOpened=false;
+         });
+     };
 
-    init();
-
-    function init() {
-      angular.extend($scope, vm);
-      angular.element($window).bind('resize', function() {
-        resizeMainContent();
-      });
+     function buildToggler(product) {
+        vm.selectedProduct = product;
+        // Component lookup should always be available since we are not using `ng-if`
+        $mdSidenav('right')
+          .toggle()
+          .then(function () {
+            $scope.sidenavOpened = !$scope.sidenavOpened;
+            $log.debug("toggle " + 'right'+ " is done");
+          });
 
     }
 
+    vm.buildToggler = buildToggler
 
-    function resizeMainContent() {
-      $scope.navBarHeight = getnavBarHeight('mainNavBar');
-      console.log('navbar: ', $scope.navBarHeight );
+    /*busqueda ebay*/
+
+      //cierres
     }
-
-
-    function getnavBarHeight(navBarClass) {
-      var navBarHeight = angular.element(document.getElementsByClassName(navBarClass)[0].offsetHeight);
-      if (navBarHeight.length>0) {
-        return navBarHeight[0] + 'px';
-      }
-    }
-
-    activate();
-
-    function activate() {
-      getWebDevTec();
-      $timeout(function() {
-        vm.classAnimation = 'rubberBand';
-      }, 4000);
-    }
-
-    function showToastr() {
-      toastr.info('Fork <a href="https://github.com/Swiip/generator-gulp-angular" target="_blank"><b>generator-gulp-angular</b></a>');
-      vm.classAnimation = '';
-    }
-
-    function getWebDevTec() {
-      vm.awesomeThings = webDevTec.getTec();
-
-      angular.forEach(vm.awesomeThings, function(awesomeThing) {
-        awesomeThing.rank = Math.random();
-      });
-    }
-  }
-})();
+  })();
