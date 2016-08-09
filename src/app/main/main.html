@@ -3,58 +3,123 @@
     <div class="logoBusqueda" layout="row" layout-align="{{search.searchText.$dirty?'none none':'center center'}}">
       <div layout="{{search.searchText.$dirty?'row':'column'}}" >
         <img class="{{search.searchText.$dirty? 'selectedFocus':'brandLogo'}}" src="assets/images/logoBD.png" />
-        <form name="search" novalidate style="{{search.searchText.$dirty? 'width: 90vw' : vm.pristine}}">
+        <form name="search" novalidate style="{{search.searchText.$dirty? 'width: 70vw' : vm.pristine}}">
+          <!--md-input-container md-no-float style="{{search.searchText.$dirty? 'margin: 31px 0 0 31px' : vm.pristine}}" class="md-block">
+            <md-icon style="line-height: 1.5;" md-colors={ 'color': 'white'} md-font-icon="fa fa-search"></md-icon>
+            <input ng-model="vm.searchText" md-delay="1000" ng-change="vm.search(vm.searchText)" name="searchText" type="text" placeholder="Producto a buscar">
+          </md-input-container-->
           <md-input-container md-no-float style="{{search.searchText.$dirty? 'margin: 31px 0 0 31px' : vm.pristine}}" class="md-block">
             <md-icon style="line-height: 1.5;" md-colors={ 'color': 'white'} md-font-icon="fa fa-search"></md-icon>
-            <input ng-model="vm.searchText" name="searchText" type="text" placeholder="Producto a buscar">
-          </md-input-container>
+          <md-autocomplete flex required
+          md-delay="1000"
+            md-input-name="searchText"
+            md-input-minlength="2"
+            md-input-maxlength="18"
+            md-no-cache="ctrl.noCache"
+            md-selected-item="ctrl.selectedItem"
+            md-search-text="vm.searchText"
+            md-items="item in vm.search(vm.searchText)"
+            md-item-text="item"
+            md-floating-label="búsqueda">
+          <md-item-template>
+            <span md-highlight-text="ctrl.searchText">{{item}}</span>
+          </md-item-template>
+          <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+            <div ng-message="required">You <b>must</b> have a favorite state.</div>
+            <div ng-message="minlength">Your entry is not long enough.</div>
+            <div ng-message="maxlength">Your entry is too long.</div>
+          </div>
+        </md-autocomplete>
+        </md-input-container>
         </form>
       </div>
     </div>
   </md-toolbar>
   <!-- be careful: nothing between md-toolbar and md-content -->
   <md-content flex>
-    <div ng-cloak class="ourWork" style="width:{{sidenavOpened? '25%':'100%'}}; overflow-y:{{sidenavOpened? 'scroll':'hiden'}}" flex-offset="{{sidenavOpened? '5':'15'}}" flex="65">
-      <md-grid-list md-cols-xs="1" md-cols-sm="{{sidenavOpened? '1':'2'}}" md-cols-md="{{sidenavOpened? '1':'3'}}" md-cols-gt-md="{{sidenavOpened? '2':'4'}}" md-row-height-gt-md="300" md-row-height="300" md-gutter="12px" md-gutter-gt-sm="40px">
-        <md-grid-tile ng-click="toggleRight(product)" ng-hide="isOpenRight()" class="md-primary" ng-repeat="product in vm.products" ng-style='product.style' md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
-          <img ng-src="{{product.img}}" />
-          <md-grid-tile-footer layout="row" layout-align="center center">
-            <h3>{{product.title}}</h3>
-            <h3 style="font-weight: 900;" layout="row" layout-align="center center">{{product.price}}</h3>
+    <div ng-cloak class="ourWork" style="width:{{sidenavOpened? '25%':'100%'}}; overflow-y:{{sidenavOpened? 'scroll':'hiden'}}" flex-offset="{{sidenavOpened? '5':'15'}}" flex="70">
+      <md-grid-list style="margin-right:{{sidenavOpened? '5vw':'0vh'}}; margin-left:.2vw" md-cols-xs="1" md-cols-sm="{{sidenavOpened? '1':'2'}}" md-cols-md="{{sidenavOpened? '1':'3'}}" md-cols-gt-md="{{sidenavOpened? '2':'4'}}" md-row-height-gt-md="300" md-row-height="300" md-gutter="12px" md-gutter-gt-sm="40px">
+        <md-grid-tile ng-click="toggleRight($index)" class="md-primary" ng-repeat="product in vm.products" ng-style='product.style' md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
+          <img ng-src="{{product.image}}" />
+          <md-grid-tile-footer class="productFooter" layout="row" layout-align="center center">
+            <md-tooltip md-direction="top">
+            {{product.name}}
+            </md-tooltip>
+            <h3 class="productName">{{product.name}}</h3>
+            <h3 class="productPrice">{{product.salePrice | currency }}</h3>
           </md-grid-tile-footer>
         </md-grid-tile>
       </md-grid-list>
     </div>
   </md-content>
-  <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+  <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" md-swipe-right="vm.previousProduct()" md-swipe-left="vm.nextProduct()">
+    <md-button ng-click="vm.nextProduct()" ng-disabled="vm.selectedProductIndex==(vm.products.length-1)" class="changeProduct toggleNext md-primary">
+      <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-right fa-3x"></md-icon>
+    </md-button>
+    <md-button ng-click="vm.previousProduct()" ng-disabled="vm.selectedProductIndex==0" class="changeProduct togglePrevious md-primary">
+      <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-left fa-3x"></md-icon>
+    </md-button>
     <md-button ng-click="close()" class="closeNavBtn md-primary">
       <md-icon style="line-height: 1.5;" md-font-icon="fa fa-close"></md-icon>
     </md-button>
     <div class="ProductContent" layout="row">
       <div class="productInfo" layout="column" layout-align="center center">
-        <img class="productImg" src="{{vm.selectedProduct.img}}" alt="" />
-        <h1>{{vm.selectedProduct.title}}</h1>
+        <div layout="row">
+          <div layout="column">
+            <img class="productImg" src="{{vm.selectedProduct.image}}" alt="" />
+          </div>
+          <div class="productImages" layout="column" flex-offset="5">
+            <img ng-if="vm.selectedProduct.angleImage" src="{{vm.selectedProduct.angleImage}}" alt="" />
+            <img ng-if="vm.selectedProduct.backViewImage" src="{{vm.selectedProduct.backViewImage}}" alt="" />
+            <img ng-if="vm.selectedProduct.leftViewImage" src="{{vm.selectedProduct.leftViewImage}}" alt="" />
+            <img ng-if="vm.selectedProduct.rightViewImage" src="{{vm.selectedProduct.rightViewImage}}" alt="" />
+            <img ng-if="vm.selectedProduct.topViewImage" src="{{vm.selectedProduct.topViewImage}}" alt="" />
+          </div>
+        </div>
+        <h1>{{vm.selectedProduct.name}}</h1>
         <div class="productTitle" layout="row" layout-align="center center">
           <div layout="column">
             <hr/>
           </div>
           <div layout="column">
-            <h2>$1220.99</h2>
+            <h2>{{vm.selectedProduct.salePrice | currency}}</h2>
           </div>
           <div layout="column">
             <hr/>
           </div>
         </div>
         <p>
-          Camisa de vestir blanca, confeccionada en tejido italiano de 100% algodón. Corte slim, cuello clásico con varillas extraíbles, cierre mediante botonadura frontal, manga larga terminada en puño sesgado de botón y bajo con refuerzos laterales.
+          {{vm.selectedProduct.shortDescription}}
         </p>
-        <div layout="row">
-          <div class="">
-            <span>Estado:	Nuevo</span>
-            <br>
-            <span>Marca:	universal studios</span>
-            <br>
-            <span>UPC:	Does not apply</span>
+        <div class="store" layout="row">
+          <div class="storeDetails" layout="column">
+
+            <span ng-if="vm.selectedProduct.customerReviews.averageScore">Calificación: {{vm.selectedProduct.customerReviews.averageScore}}<br></span>
+            <br ng-if="vm.selectedProduct.customerReviews.averageScore">
+
+            <span ng-if="vm.selectedProduct.condition">Estado: {{vm.selectedProduct.condition}}<br></span>
+            <br ng-if="vm.selectedProduct.condition">
+
+            <span ng-if="vm.selectedProduct.includedItemList.includedItem">Incluye: {{vm.selectedProduct.includedItemList.includedItem}}</span>
+            <br ng-if="vm.selectedProduct.includedItemList.includedItem">
+
+            <span ng-if="vm.selectedProduct.digital">Formato digital disponible</span>
+            <br ng-if="vm.selectedProduct.digital">
+
+            <span ng-if="vm.selectedProduct.upc">UPC: {{vm.selectedProduct.upc}}</span>
+            <br ng-if="vm.selectedProduct.upc">
+
+            <span ng-if="vm.selectedProduct.freeShipping">Envio gratuito {{vm.selectedProduct.freeShipping}}</span>
+            <br ng-if="vm.selectedProduct.freeShipping">
+
+            <span ng-if="vm.selectedProduct.shippingCost">Costo de envio: {{vm.selectedProduct.shippingCost}}</span>
+            <br ng-if="vm.selectedProduct.shippingCost">
+
+            <span ng-if="vm.selectedProduct.inStoreAvailability">Disponibilidad: {{vm.selectedProduct.inStoreAvailability}}</span>
+            <br ng-if="vm.selectedProduct.inStoreAvailability">
+          </div>
+          <div class="storeLink" layout="column">
+              <a layout="row" layout-align="start center" href="{{vm.selectedProduct.url}}"><span>COMPRAR EN</span><img class="logoImage" src="assets/images/bestbuylogo.png" alt="" /></a>
           </div>
         </div>
       </div>

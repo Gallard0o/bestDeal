@@ -72,8 +72,7 @@ md-toolbar.md-default-theme:not(.md-menu-toolbar) md-icon, md-toolbar:not(.md-me
 md-input-container.selectedFocusInput {
   margin: 36px 0 !important;
 }
-md-grid-list md-grid-tile md-grid-tile-footer,
-md-grid-list md-grid-tile md-grid-tile-header {
+md-grid-list md-grid-tile md-grid-tile-footer, md-grid-list md-grid-tile md-grid-tile-header {
   width: 100%;
 }
 md-grid-tile {
@@ -83,14 +82,13 @@ md-grid-tile {
 }
 md-grid-tile img {
   max-width: 100%;
-  max-height: 242.84px;
+  max-height: 234px;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
-  margin-left: auto;
-  margin-right: auto;
+  bottom: 60px;
+  margin: auto;
 }
 md-grid-tile.ng-scope.ng-isolate-scope {
   padding-top: calc(((26% - 6px) * 1) + 0px) !important;
@@ -141,6 +139,7 @@ div.ng-scope {
 }
 .ourWork {
   min-width: 45%;
+  height: 100vh
 }
 .productContent {
   width: 100%;
@@ -172,7 +171,7 @@ div.ng-scope {
   margin: 5px 25px;
 }
 .productInfo h1 {
-  margin: 5px 25px;
+  margin: 5px 30px;
 }
 .logoBusqueda{
   margin: auto;
@@ -180,6 +179,71 @@ div.ng-scope {
 
 #full-height{
   min-height: 100vh;
+}
+
+.changeProduct {
+  position: absolute;
+top: 50%;
+margin: 0;
+min-width: 0;
+}
+
+.toggleNext{
+  right:0
+}
+
+.togglePrevious{
+  left:0
+}
+
+.store{
+  margin-top: 30px;
+  width: 100%;
+  padding: 21px 60px 0 60px;
+  background-color: #ececec;
+
+  span {
+    text-align: initial;
+  }
+  .storeDetails{
+    margin-right: 60px;
+  }
+}
+
+md-grid-list md-grid-tile md-grid-tile-header, md-grid-list md-grid-tile md-grid-tile-footer {
+  height: 60px;
+}
+
+md-input-container:not(.md-input-has-value) input:not(:focus), md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-ampm-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-day-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-hour-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-millisecond-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-minute-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-month-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-second-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-week-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-year-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-text {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.productPrice {
+  font-weight: bold;
+  text-align: center;
+}
+
+.productName{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-align: center;
+}
+
+.productFooter{
+  background-color: #ef465b;
+}
+
+.productImages img {
+  max-width: 90px;
+  max-height: 90px;
+  margin-bottom: 13px;
+}
+
+.logoImage{
+  max-width: 100px;
+  max-height: 100px
 }
 /**
  *  Do not remove the comment below. It's the markers used by gulp-inject to inject

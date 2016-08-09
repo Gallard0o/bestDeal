@@ -5,54 +5,80 @@
     .module('bestdeal')
     .controller('MainController', MainController);
 
-    /** @ngInject */
-    function MainController($timeout, webDevTec, toastr, $window, $scope, $mdSidenav, $log) {
-      var vm = this;
-      $scope.toggleRight = buildToggler;
-      vm.products = [
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra1.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra2.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra3.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra4.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra5.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra6.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra7.jpg'
-    },
-    {title: 'CHAMARRA DE PIEL', price: '$300 - $900', img: 'assets/images/chamarra8.jpg'
-    }
-    ];
+  /** @ngInject */
+  function MainController($timeout, webDevTec, toastr, $window, $scope, $mdSidenav, $log, httpService) {
+    var vm = this;
 
-    $scope.close = function () {
-       // Component lookup should always be available since we are not using `ng-if`
-       $mdSidenav('right').close()
-         .then(function () {
-           $log.debug("close RIGHT is done");
-          $scope.sidenavOpened=false;
-         });
-     };
+    $scope.toggleRight = buildToggler;
+    vm.products = [];
 
-     function buildToggler(product) {
-        vm.selectedProduct = product;
+    $scope.close = function() {
+      // Component lookup should always be available since we are not using `ng-if`
+      $mdSidenav('right').close()
+        .then(function() {
+          $log.debug("close RIGHT is done");
+          $scope.sidenavOpened = false;
+        });
+    };
+
+function searchByCode(query){
+  httpService.searchByCode(vm.selectedProduct.sku).then(function(response){
+    console.log(response.data.products[0])
+    vm.selectedProduct=response.data.products[0];
+  })
+}
+
+    function buildToggler(index) {
+      vm.selectedProductIndex = index;
+          vm.selectedProduct = vm.products[index];
+      searchByCode(vm.selectedProduct.sku);
+
+      if (!$scope.sidenavOpened) {
         // Component lookup should always be available since we are not using `ng-if`
         $mdSidenav('right')
           .toggle()
-          .then(function () {
+          .then(function() {
             $scope.sidenavOpened = !$scope.sidenavOpened;
-            $log.debug("toggle " + 'right'+ " is done");
+            $log.debug("toggle " + 'right' + " is done");
           });
+      }
 
     }
 
     vm.buildToggler = buildToggler
 
+    vm.nextProduct = nextProduct;
+
+    function nextProduct() {
+      if (vm.selectedProductIndex < (vm.products.length - 1)) {
+        vm.selectedProductIndex++;
+        vm.selectedProduct = vm.products[vm.selectedProductIndex];
+        searchByCode(vm.selectedProduct.sku);
+      }
+    }
+
+    vm.previousProduct = previousProduct;
+
+    function previousProduct() {
+      if (vm.selectedProductIndex > 0) {
+        vm.selectedProductIndex--;
+        vm.selectedProduct = vm.products[vm.selectedProductIndex];
+        searchByCode(vm.selectedProduct.sku);
+      }
+    }
+
+    vm.search = search;
+
+    function search(query) {
+      if (query) {
+        httpService.searchByName(query).then(function(data){
+          vm.products=data.data.products;
+          console.log(data.data.products)
+        });
+      }
+    }
     /*busqueda ebay*/
 
-      //cierres
-    }
-  })();
+    //cierres
+  }
+})();
