@@ -14,21 +14,15 @@
           md-delay="1000"
             md-input-name="searchText"
             md-input-minlength="2"
-            md-input-maxlength="18"
-            md-no-cache="ctrl.noCache"
-            md-selected-item="ctrl.selectedItem"
+            md-selected-item="vm.selectedProductInAutoComplete"
+            md-selected-item-change="toggleRight(item)"
             md-search-text="vm.searchText"
             md-items="item in vm.search(vm.searchText)"
-            md-item-text="item"
-            md-floating-label="búsqueda">
+            md-item-text="item.name"
+            md-floating-label="Buscar">
           <md-item-template>
-            <span md-highlight-text="ctrl.searchText">{{item}}</span>
+            <span md-highlight-text="ctrl.searchText">{{item.name}} - {{item.salePrice | currency}}</span>
           </md-item-template>
-          <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
-            <div ng-message="required">You <b>must</b> have a favorite state.</div>
-            <div ng-message="minlength">Your entry is not long enough.</div>
-            <div ng-message="maxlength">Your entry is too long.</div>
-          </div>
         </md-autocomplete>
         </md-input-container>
         </form>
@@ -36,10 +30,41 @@
     </div>
   </md-toolbar>
   <!-- be careful: nothing between md-toolbar and md-content -->
+  <div class="shadow">
+  <div class="filterMenu" layout="row" flex-offset="{{sidenavOpened? '5':'10'}}">
+  <md-menu>
+    Filtrar por:
+    <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
+      mejor coincidencia <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
+    </md-button>
+    <md-menu-content width="4">
+      <md-menu-item ng-repeat="filter in vm.filters">
+        <md-button ng-click="ctrl.toggleNotifications()">
+          <md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon>
+          {{ctrl.notificationsEnabled ? 'Disable' : 'Enable' }} {{filter.title}}
+        </md-button>
+      </md-menu-item>
+    </md-menu-content>
+  </md-menu>
+  <md-menu>
+    <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
+      todo <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
+    </md-button>
+    <md-menu-content width="4">
+      <md-menu-item ng-repeat="secondfilter in vm.secondfilters">
+        <md-button ng-click="ctrl.toggleNotifications()">
+          <md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon>
+          {{ctrl.notificationsEnabled ? 'Disable' : 'Enable' }} {{secondfilter.title}}
+        </md-button>
+      </md-menu-item>
+    </md-menu-content>
+  </md-menu>
+  </div>
+  </div>
   <md-content flex>
     <div ng-cloak class="ourWork" style="width:{{sidenavOpened? '25%':'100%'}}; overflow-y:{{sidenavOpened? 'scroll':'hiden'}}" flex-offset="{{sidenavOpened? '5':'15'}}" flex="70">
       <md-grid-list style="margin-right:{{sidenavOpened? '5vw':'0vh'}}; margin-left:.2vw" md-cols-xs="1" md-cols-sm="{{sidenavOpened? '1':'2'}}" md-cols-md="{{sidenavOpened? '1':'3'}}" md-cols-gt-md="{{sidenavOpened? '2':'4'}}" md-row-height-gt-md="300" md-row-height="300" md-gutter="12px" md-gutter-gt-sm="40px">
-        <md-grid-tile ng-click="toggleRight($index)" class="md-primary" ng-repeat="product in vm.products" ng-style='product.style' md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
+        <md-grid-tile ng-click="toggleRight(product)" class="md-primary" ng-repeat="product in vm.products" ng-style='product.style' md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
           <img ng-src="{{product.image}}" />
           <md-grid-tile-footer class="productFooter" layout="row" layout-align="center center">
             <md-tooltip md-direction="top">
@@ -64,9 +89,10 @@
     </md-button>
     <div class="ProductContent" layout="row">
       <div class="productInfo" layout="column" layout-align="center center">
+        <h2 class="title">{{vm.selectedProduct.name}}</h2>
         <div layout="row">
           <div layout="column">
-            <img class="productImg" src="{{vm.selectedProduct.image}}" alt="" />
+            <img ng-click="ctrl.showDialog($event)" class="productImg" src="{{vm.selectedProduct.image}}" alt="" />
           </div>
           <div class="productImages" layout="column" flex-offset="5">
             <img ng-if="vm.selectedProduct.angleImage" src="{{vm.selectedProduct.angleImage}}" alt="" />
@@ -76,21 +102,20 @@
             <img ng-if="vm.selectedProduct.topViewImage" src="{{vm.selectedProduct.topViewImage}}" alt="" />
           </div>
         </div>
-        <h1>{{vm.selectedProduct.name}}</h1>
-        <div class="productTitle" layout="row" layout-align="center center">
-          <div layout="column">
-            <hr/>
-          </div>
-          <div layout="column">
-            <h2>{{vm.selectedProduct.salePrice | currency}}</h2>
-          </div>
-          <div layout="column">
-            <hr/>
-          </div>
-        </div>
         <p>
           {{vm.selectedProduct.shortDescription}}
         </p>
+        <div style="width:600px">
+        <div layout="row">
+          <md-checkbox ng-repeat="checkbox in vm.checkboxes" class="checkfilter {{checkbox.class}}" ng-model="vm.checkbox[0].model" aria-label="{{checkbox.label}}">
+            {{checkbox.title}}
+          </md-checkbox>
+        </div>
+        <a ng-repeat="link in vm.productlinks" class="storeLink" layout="row" layout-align="start center" href="{{vm.selectedProduct.url}}">
+          <div class="{{link.condition}}"></div>
+          <img class="logoImage" src="{{link.logo}}" alt="" />
+          <h3 class="price">{{vm.selectedProduct.salePrice | currency}}</h3>
+        </a>
         <div class="store" layout="row">
           <div class="storeDetails" layout="column">
 
@@ -118,9 +143,10 @@
             <span ng-if="vm.selectedProduct.inStoreAvailability">Disponibilidad: {{vm.selectedProduct.inStoreAvailability}}</span>
             <br ng-if="vm.selectedProduct.inStoreAvailability">
           </div>
-          <div class="storeLink" layout="column">
-              <a layout="row" layout-align="start center" href="{{vm.selectedProduct.url}}"><span>COMPRAR EN</span><img class="logoImage" src="assets/images/bestbuylogo.png" alt="" /></a>
+          <div class="" layout="column">
+
           </div>
+        </div>
         </div>
       </div>
     </div>

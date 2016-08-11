@@ -95,7 +95,7 @@ md-grid-tile.ng-scope.ng-isolate-scope {
 }
 md-sidenav.md-sidenav-right {
   position: fixed;
-  top: 94px;
+  top: 95px;
 }
 md-backdrop {
   display: none;
@@ -113,14 +113,19 @@ div.ng-scope {
     max-height: 400px;
   }
 }
-@media screen and (min-width:768px) and (max-width: 850px) {
+@media screen and (min-width:767px) and (max-width: 850px) {
   md-sidenav {
     max-width: 50vw;
     width: 50vw;
     min-width: 50vw;
   }
+
+  .productImg {
+    max-width: 380px;
+    max-height: 380px;
+  }
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   md-sidenav {
     max-width: 100vw;
     width: 100vw;
@@ -168,10 +173,11 @@ div.ng-scope {
 .productInfo p {
   max-width: 600px;
   text-align: center;
-  margin: 5px 25px;
+  margin: 45px 25px 45px 25px;
 }
-.productInfo h1 {
-  margin: 5px 30px;
+.productInfo .title {
+  margin: 0px;
+  padding: 0px 60px 30px 60px;
 }
 .logoBusqueda{
   margin: auto;
@@ -197,7 +203,6 @@ min-width: 0;
 }
 
 .store{
-  margin-top: 30px;
   width: 100%;
   padding: 21px 60px 0 60px;
   background-color: #ececec;
@@ -241,9 +246,69 @@ md-input-container:not(.md-input-has-value) input:not(:focus), md-input-containe
   margin-bottom: 13px;
 }
 
+.storeLink{
+  background-color: #3f51b5;
+  padding: 0px 30px 0 0;
+  width: 100%;
+  text-decoration: none;
+  margin-top: 1vh;
+  height: 74.64px;
+  h3{
+    color: white;
+  }
+  .price{
+    margin-left: auto;
+  }
+  div{
+    width: 20px;
+    height: 100%;
+  }
+  div.refurbushedProduct{
+    background-color: rgba(255,64,129,0.87);
+  }
+  div.usedProduct{
+    background-color: rgba(45, 176, 191, 0.87);
+  }
+  div.newProduct{
+    background-color: rgba(90, 193, 66, 0.87);
+  }
+}
 .logoImage{
   max-width: 100px;
-  max-height: 100px
+  max-height: 100px;
+      margin: 0 15px;
+}
+
+.botonFiltro{
+  width: auto!important;
+  margin: 0 6px;
+  height: 40px;
+  min-width: 0;
+  line-height: 24px;
+  padding: 8px;
+  background-color: #e2e2e2;
+  border-radius: 0px!important;
+}
+
+md-autocomplete[md-floating-label] md-autocomplete-wrap {
+    height: 50px;
+}
+
+.shadow{
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  z-index: 1;
+}
+
+.checkNew.md-default-theme.md-checked .md-icon, .checkNew.md-checked .md-icon {
+    background-color: rgba(90, 193, 66, 0.87);
+  }
+
+.checkUsed.md-default-theme.md-checked .md-icon, .checkUsed.md-checked .md-icon {
+      background-color: rgba(45, 176, 191, 0.87);
+    }
+
+.checkfilter .md-label {
+      margin-left: 26px;
 }
 /**
  *  Do not remove the comment below. It's the markers used by gulp-inject to inject
