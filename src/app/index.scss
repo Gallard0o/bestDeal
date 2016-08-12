@@ -72,27 +72,8 @@ md-toolbar.md-default-theme:not(.md-menu-toolbar) md-icon, md-toolbar:not(.md-me
 md-input-container.selectedFocusInput {
   margin: 36px 0 !important;
 }
-md-grid-list md-grid-tile md-grid-tile-footer, md-grid-list md-grid-tile md-grid-tile-header {
-  width: 100%;
-}
-md-grid-tile {
-  margin-top: 10px;
-  margin-bottom: 40px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-}
-md-grid-tile img {
-  max-width: 100%;
-  max-height: 234px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 60px;
-  margin: auto;
-}
-md-grid-tile.ng-scope.ng-isolate-scope {
-  padding-top: calc(((26% - 6px) * 1) + 0px) !important;
-}
+
+
 md-sidenav.md-sidenav-right {
   position: fixed;
   top: 95px;
@@ -215,10 +196,6 @@ min-width: 0;
   }
 }
 
-md-grid-list md-grid-tile md-grid-tile-header, md-grid-list md-grid-tile md-grid-tile-footer {
-  height: 60px;
-}
-
 md-input-container:not(.md-input-has-value) input:not(:focus), md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-ampm-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-day-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-hour-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-millisecond-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-minute-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-month-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-second-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-week-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-year-field, md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-text {
     color: rgba(255, 255, 255, 0.65);
 }
@@ -226,19 +203,55 @@ md-input-container:not(.md-input-has-value) input:not(:focus), md-input-containe
 .productPrice {
   font-weight: bold;
   text-align: center;
+  color: white;
+  font-size: 1rem;
 }
 
 .productName{
+  color: white;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-align: center;
+  font-size: 1rem;
 }
 
-.productFooter{
-  background-color: #ef465b;
+.productContainer{
+ padding: .5vw;
+ font-size: 0;
+ display: -ms-flexbox;
+ -ms-flex-wrap: wrap;
+ -ms-flex-direction: column;
+ -webkit-flex-flow: row wrap;
+ flex-flow: row wrap;
+ display: -webkit-box;
+ display: flex;
+
+  .productFooter{
+    background-color: #ef465b;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+  }
+
+  .product{
+    -webkit-box-flex: auto;
+    -ms-flex: auto;
+    flex: auto;
+    width: 200px;
+    margin: .5vw;
+    .image{
+      width: 217.22px;
+      height: 215px;
+      img{
+        max-width: 217.22px;
+      max-height: 215px;
+      }
+    }
+  }
 }
+
 
 .productImages img {
   max-width: 90px;

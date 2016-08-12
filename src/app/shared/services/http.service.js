@@ -13,7 +13,7 @@
         /*return $http.get('https://api.bestbuy.com/v1/products(('+queryString+'))?apiKey='+API_CONFIG.bestbuyAPIkey+'&format=json').success(function(response){
           return response.products;
         });*/
-        return $http.get('https://api.bestbuy.com/v1/products(name=%22'+query+'*%22)?format=json&show=sku,name,image,shortDescription,salePrice&sort=regularPrice.asc&apiKey='+API_CONFIG.bestbuyAPIkey).success(function(response){
+        return $http.get('https://api.bestbuy.com/v1/products(name=%22'+query+'*%22)?format=json&show=sku,name,image,shortDescription,salePrice&sort=regularPrice.asc&pageSize=30&apiKey='+API_CONFIG.bestbuyAPIkey).success(function(response){
           return response.products;
         });
       }
