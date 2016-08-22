@@ -1,156 +1,203 @@
 <div layout="column" id="full-height">
-  <md-toolbar style="height:{{search.searchText.$dirty?'5vw':'100vh'}}; min-height:{{search.searchText.$dirty?'95px':'100vh'}}">
+  <md-toolbar style="height:{{search.searchText.$dirty?'95px':'100vh'}}; min-height:{{search.searchText.$dirty?'95px':'100vh'}}">
     <div class="logoBusqueda" layout="row" layout-align="{{search.searchText.$dirty?'none none':'center center'}}">
-      <div layout="{{search.searchText.$dirty?'row':'column'}}" >
+      <div layout="{{search.searchText.$dirty?'row':'column'}}">
         <img class="{{search.searchText.$dirty? 'selectedFocus':'brandLogo'}}" src="assets/images/logoBD.png" />
         <form name="search" novalidate style="{{search.searchText.$dirty? 'width: 70vw' : vm.pristine}}">
           <!--md-input-container md-no-float style="{{search.searchText.$dirty? 'margin: 31px 0 0 31px' : vm.pristine}}" class="md-block">
             <md-icon style="line-height: 1.5;" md-colors={ 'color': 'white'} md-font-icon="fa fa-search"></md-icon>
             <input ng-model="vm.searchText" md-delay="1000" ng-change="vm.search(vm.searchText)" name="searchText" type="text" placeholder="Producto a buscar">
           </md-input-container-->
-          <md-input-container md-no-float style="{{search.searchText.$dirty? 'margin: 31px 0 0 31px' : vm.pristine}}" class="md-block">
-            <md-icon style="line-height: 1.5;" md-colors={ 'color': 'white'} md-font-icon="fa fa-search"></md-icon>
-          <md-autocomplete flex required
-          md-delay="1000"
-            md-input-name="searchText"
-            md-input-minlength="2"
-            md-selected-item="vm.selectedProductInAutoComplete"
-            md-selected-item-change="toggleRight(item)"
-            md-search-text="vm.searchText"
-            md-items="item in vm.search(vm.searchText)"
-            md-item-text="item.name"
-            md-floating-label="Buscar">
-          <md-item-template>
-            <span md-highlight-text="ctrl.searchText">{{item.name}} - {{item.salePrice | currency}}</span>
-          </md-item-template>
-        </md-autocomplete>
-        </md-input-container>
+          <md-input-container md-no-float style="{{search.searchText.$dirty? 'margin: 31px 0 0 31px' : vm.pristine}}; padding-left: 37px;" class="md-block">
+            <md-icon style="line-height: 1.5; position: absolute; left: 0; bottom: 0;" md-font-icon="fa fa-search"></md-icon>
+            <md-autocomplete class="search" flex required md-delay="1000" md-no-asterisk md-input-name="searchText" md-input-minlength="2" md-selected-item="vm.selectedProductInAutoComplete" md-selected-item-change="toggleRight(item)" md-search-text="vm.searchText"
+              md-items="item in vm.search(vm.searchText)" md-item-text="item.name" md-floating-label="Buscar">
+              <md-item-template>
+                <span md-highlight-text="ctrl.searchText">{{item.title}} - {{item.salePrice | currency}}</span>
+              </md-item-template>
+            </md-autocomplete>
+          </md-input-container>
         </form>
       </div>
     </div>
   </md-toolbar>
   <!-- be careful: nothing between md-toolbar and md-content -->
   <div class="shadow">
-  <div class="filterMenu" layout="row" flex-offset="{{sidenavOpened? '5':'10'}}">
-  <md-menu>
-    Filtrar por:
-    <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
-      mejor coincidencia <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
-    </md-button>
-    <md-menu-content width="4">
-      <md-menu-item ng-repeat="filter in vm.filters">
-        <md-button ng-click="ctrl.toggleNotifications()">
-          <md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon>
-          {{ctrl.notificationsEnabled ? 'Disable' : 'Enable' }} {{filter.title}}
+    <div class="filterMenu" layout="row" flex-offset="{{sidenavOpened? '5':'10'}}" style="{{search.searchText.$dirty? 'display: initial' : 'display: none'}}">
+      <md-menu>
+        Filtrar por:
+        <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
+
+          {{vm.filterTitle||'mejor coincidencia'}}
+          <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
         </md-button>
-      </md-menu-item>
-    </md-menu-content>
-  </md-menu>
-  <md-menu>
-    <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
-      todo <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
-    </md-button>
-    <md-menu-content width="4">
-      <md-menu-item ng-repeat="secondfilter in vm.secondfilters">
-        <md-button ng-click="ctrl.toggleNotifications()">
-          <md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon>
-          {{ctrl.notificationsEnabled ? 'Disable' : 'Enable' }} {{secondfilter.title}}
-        </md-button>
-      </md-menu-item>
-    </md-menu-content>
-  </md-menu>
-  </div>
+        <md-menu-content md-backdrop width="4">
+          <md-menu-item ng-repeat="filter in vm.filters">
+            <md-button ng-click="vm.sortBy(filter.sort, filter.reverse,filter.title)">
+              {{filter.title}}
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+      <!--<md-menu>
+     <md-button aria-label="Open phone interactions menu" class="md-icon-button botonFiltro" ng-click="vm.openMenu($mdOpenMenu, $event)">
+       todo <md-icon style="line-height: .5;" md-font-icon="fa fa-caret-down"></md-icon>
+     </md-button>
+     <md-menu-content width="4">
+       <md-menu-item ng-repeat="secondfilter in vm.secondfilters">
+         <md-button ng-click="sortBy('name')">
+           {{secondfilter.title}}
+         </md-button>
+       </md-menu-item>
+     </md-menu-content>
+   </md-menu>-->
+    </div>
   </div>
   <md-content flex>
     <div ng-cloak class="ourWork" style="width:{{sidenavOpened? '25%':'100%'}}; overflow-y:{{sidenavOpened? 'scroll':'hiden'}}" flex-offset="{{sidenavOpened? '5':'15'}}" flex="70">
-      <div  class="productContainer" style="margin-right:{{sidenavOpened? '5vw':'0vh'}};";>
-        <div class="product" ng-click="toggleRight(product)" ng-repeat="product in vm.products" ng-style='product.style'>
-          <div class="image">
-            <img ng-src="{{product.image}}" />
+      <div class="productContainer" style="margin-right:{{sidenavOpened? '5vw':'0vh'}};" ;>
+        <div class="product" ng-click="toggleRight(product)" ng-repeat="product in vm.products | orderBy:vm.propertyName:vm.reverseOrder" ng-style='product.style'>
+          <div class="productImage">
+            <img ng-src="{{product.images? product.images[0]:'assets/images/not-available.png'}}" />
           </div>
           <div class="productFooter" layout="row" layout-align="center center">
-            <md-tooltip md-direction="top">
-            {{product.name}}
-            </md-tooltip>
-            <h3 class="productName">{{product.name}}</h3>
-            <h3 class="productPrice">{{product.salePrice | currency }}</h3>
+            <div>
+              <!--<md-tooltip md-direction="top">
+              {{product.title}}
+            </md-tooltip>-->
+              <h3 layout="row" layout-align="center center" class="productName">{{product.title}}</h3>
+            </div>
+
+            <div flex layout="row" class="productPrice">
+              <div class="star-ratings-css-card">
+                <div class="star-ratings-css-card-top" style="width: {{product.rating*20}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+              </div>
+              <h3>{{product.options[0].price | currency }}</h3>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
   </md-content>
-  <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" md-swipe-right="vm.previousProduct()" md-swipe-left="vm.nextProduct()">
-    <md-button ng-click="vm.nextProduct()" ng-disabled="vm.selectedProductIndex==(vm.products.length-1)" class="changeProduct toggleNext md-primary">
-      <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-right fa-3x"></md-icon>
-    </md-button>
-    <md-button ng-click="vm.previousProduct()" ng-disabled="vm.selectedProductIndex==0" class="changeProduct togglePrevious md-primary">
-      <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-left fa-3x"></md-icon>
-    </md-button>
-    <md-button ng-click="close()" class="closeNavBtn md-primary">
-      <md-icon style="line-height: 1.5;" md-font-icon="fa fa-close"></md-icon>
-    </md-button>
-    <div class="ProductContent" layout="row">
-      <div class="productInfo" layout="column" layout-align="center center">
-        <h2 class="title">{{vm.selectedProduct.name}}</h2>
-        <div layout="row">
-          <div layout="column">
-            <img ng-click="ctrl.showDialog($event)" class="productImg" src="{{vm.selectedProduct.image}}" alt="" />
-          </div>
-          <div class="productImages" layout="column" flex-offset="5">
-            <img ng-if="vm.selectedProduct.angleImage" src="{{vm.selectedProduct.angleImage}}" alt="" />
-            <img ng-if="vm.selectedProduct.backViewImage" src="{{vm.selectedProduct.backViewImage}}" alt="" />
-            <img ng-if="vm.selectedProduct.leftViewImage" src="{{vm.selectedProduct.leftViewImage}}" alt="" />
-            <img ng-if="vm.selectedProduct.rightViewImage" src="{{vm.selectedProduct.rightViewImage}}" alt="" />
-            <img ng-if="vm.selectedProduct.topViewImage" src="{{vm.selectedProduct.topViewImage}}" alt="" />
-          </div>
-        </div>
-        <p>
-          {{vm.selectedProduct.shortDescription}}
-        </p>
-        <div style="width:600px">
-        <div layout="row">
-          <md-checkbox ng-repeat="checkbox in vm.checkboxes" class="checkfilter {{checkbox.class}}" ng-model="vm.checkbox[0].model" aria-label="{{checkbox.label}}">
-            {{checkbox.title}}
-          </md-checkbox>
-        </div>
-        <a ng-repeat="link in vm.productlinks" class="storeLink" layout="row" layout-align="start center" href="{{vm.selectedProduct.url}}">
-          <div class="{{link.condition}}"></div>
-          <img class="logoImage" src="{{link.logo}}" alt="" />
-          <h3 class="price">{{vm.selectedProduct.salePrice | currency}}</h3></a>
-        <div class="store" layout="row">
-          <div class="storeDetails" layout="column">
-
-            <span ng-if="vm.selectedProduct.customerReviews.averageScore">Calificación: {{vm.selectedProduct.customerReviews.averageScore}}<br></span>
-            <br ng-if="vm.selectedProduct.customerReviews.averageScore">
-
-            <span ng-if="vm.selectedProduct.condition">Estado: {{vm.selectedProduct.condition}}<br></span>
-            <br ng-if="vm.selectedProduct.condition">
-
-            <span ng-if="vm.selectedProduct.includedItemList.includedItem">Incluye: {{vm.selectedProduct.includedItemList.includedItem}}</span>
-            <br ng-if="vm.selectedProduct.includedItemList.includedItem">
-
-            <span ng-if="vm.selectedProduct.digital">Formato digital disponible</span>
-            <br ng-if="vm.selectedProduct.digital">
-
-            <span ng-if="vm.selectedProduct.upc">UPC: {{vm.selectedProduct.upc}}</span>
-            <br ng-if="vm.selectedProduct.upc">
-
-            <span ng-if="vm.selectedProduct.freeShipping">Envio gratuito {{vm.selectedProduct.freeShipping}}</span>
-            <br ng-if="vm.selectedProduct.freeShipping">
-
-            <span ng-if="vm.selectedProduct.shippingCost">Costo de envio: {{vm.selectedProduct.shippingCost}}</span>
-            <br ng-if="vm.selectedProduct.shippingCost">
-
-            <span ng-if="vm.selectedProduct.inStoreAvailability">Disponibilidad: {{vm.selectedProduct.inStoreAvailability}}</span>
-            <br ng-if="vm.selectedProduct.inStoreAvailability">
-          </div>
-          <div class="" layout="column">
-
-          </div>
-        </div>
+  <md-sidenav md-disable-backdrop flex layout="column" class="md-sidenav-right md-whiteframe-4dp" ng-cloak md-component-id="right" md-swipe-right="vm.previousProduct()" md-swipe-left="vm.nextProduct()">
+    <div flex class="shadow" layout="column" layout-align="center center" style="max-height: 40px; min-height: 40px;">
+      <div flex class="sidenavMenu" layout="raw">
+        <md-button ng-click="close()" class="closeNavBtn md-primary" aria-label="button">
+          <md-icon style="line-height: 1.5;" md-font-icon="fa fa-close"></md-icon>
+        </md-button>
+        <div class="">
+          <md-button ng-click="vm.previousProduct()" ng-disabled="vm.selectedProductIndex==0" class="changeProduct togglePrevious md-primary" aria-label="button">
+            <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-left fa-3x"></md-icon>
+          </md-button>
+          <md-button ng-click="vm.nextProduct()" ng-disabled="vm.selectedProductIndex==(vm.products.length-1)" class="changeProduct toggleNext md-primary" aria-label="button">
+            <md-icon style="line-height: .5;" md-font-icon="fa fa-angle-right fa-3x"></md-icon>
+          </md-button>
         </div>
       </div>
     </div>
+    <md-content flex layout-padding="" style="padding:0;">
+      <div layout-fill="" layout-align="top center" style="padding:0;">
+        <div class="ProductContent" layout="row">
+          <div class="productInfo" layout="column" layout-align="center center">
+            <h2 class="title">{{vm.selectedProduct.title}}</h2>
+            <div class="star-ratings-css">
+              <div class="star-ratings-css-top" style="width: {{vm.selectedProduct.rating*20}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+            </div>
+            <div layout="column">
+              <div layout="row">
+                <div layout="column">
+                  <img class="productImg" ng-src="{{vm.selectedImage? vm.selectedImage:'assets/images/not-available.png'}}" ng-init="vm.selectedImage=vm.selectedProduct.images[0]" alt="image" />
+                </div>
+                <div class="productImagesRight" layout="column" ng-if="vm.selectedProduct.images.length>1">
+                  <div layout="row">
+                    <img ng-if="vm.selectedProduct.images[0]" ng-src="{{vm.selectedProduct.images[0]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[0]" alt="" />
+                  </div>
+                  <div layout="row">
+                    <img ng-if="vm.selectedProduct.images[1]" ng-src="{{vm.selectedProduct.images[1]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[1]" alt="" />
+                  </div>
+                  <div layout="row">
+                    <img class="movileOnly hide1200" ng-if="vm.selectedProduct.images[2]" ng-src="{{vm.selectedProduct.images[2]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[2]" alt="" />
+                  </div>
+                </div>
+              </div>
+              <div class="productImagesBottom" layout="row" flex-offset="5" ng-if="vm.selectedProduct.images.length>3">
+                <div class="column">
+                  <img ng-if="vm.selectedProduct.images[3]" ng-src="{{vm.selectedProduct.images[3]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[3]" alt="" />
+                </div>
+                <div class="column">
+                  <img ng-if="vm.selectedProduct.images[4]" ng-src="{{vm.selectedProduct.images[4]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[4]" alt="" />
+                </div>
+                <div class="column">
+                  <img ng-if="vm.selectedProduct.images[5]" ng-src="{{vm.selectedProduct.images[5]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[5]" alt="" />
+                </div>
+                <div class="column">
+                  <img class="movileOnly hide1200" ng-if="vm.selectedProduct.images[6]" ng-src="{{vm.selectedProduct.images[6]}}" ng-click="vm.selectedImage=vm.selectedProduct.images[6]" alt="" />
+                </div>
+              </div>
+            </div>
+            <!--<p class="productDescriptionTop">
+              {{vm.selectedProduct.description}}
+            </p>-->
+            <div style="width:700px; padding: 30px 0 15px;">
+              <div flex layout="row" class="checkboxFilters">
+                <div ng-repeat="item in vm.checkboxes">
+                  <md-checkbox ng-class="item.class" ng-model="item.checked" ng-change="vm.checkboxChanged(item)" aria-label="{{item.label}}">
+                    {{item.title}}
+                  </md-checkbox>
+                </div>
+              </div>
+              <div layout="row">
+                <div layout="column" style="width:100%; padding: 0px 10px;">
+                  <a ng-repeat="option in vm.selectedProduct.options | byCondition:vm.conditionFilters | orderBy:'price'" class="storeLink" layout="row" layout-align="start center" href="{{option.link}}" target="_blank">
+                    <div class="{{option.condition}}"></div>
+                    <img class="logoImage" ng-src="assets/images/{{option.store}}.png" alt="{{option.store}}" />
+                    <h3 class="price">{{option.price | currency}}</h3>
+                  </a>
+                </div>
+              </div>
+
+              <div class="store" layout="row">
+                <div class="storeDetails" layout="column">
+
+                  <hm-read-more hm-text="{{vm.selectedProduct.description}}" hm-limit="200" hm-more-text="ver más" hm-less-text="mejor no" hm-dots-class="dots" hm-link-class="links">
+                  </hm-read-more>
+
+                  <span ng-if="vm.selectedProduct.customerReviews.averageScore">Calificación: {{vm.selectedProduct.customerReviews.averageScore}}<br></span>
+                  <br ng-if="vm.selectedProduct.customerReviews.averageScore">
+
+                  <span ng-if="vm.selectedProduct.condition">Estado: {{vm.selectedProduct.condition}}<br></span>
+                  <br ng-if="vm.selectedProduct.condition">
+
+                  <span ng-if="vm.selectedProduct.includedItemList.includedItem">Incluye: {{vm.selectedProduct.includedItemList.includedItem}}</span>
+                  <br ng-if="vm.selectedProduct.includedItemList.includedItem">
+
+                  <span ng-if="vm.selectedProduct.digital">Formato digital disponible</span>
+                  <br ng-if="vm.selectedProduct.digital">
+
+                  <span ng-if="vm.selectedProduct.upc">UPC: {{vm.selectedProduct.upc}}</span>
+                  <br ng-if="vm.selectedProduct.upc">
+
+                  <span ng-if="vm.selectedProduct.freeShipping">Envio gratuito {{vm.selectedProduct.freeShipping}}</span>
+                  <br ng-if="vm.selectedProduct.freeShipping">
+
+                  <span ng-if="vm.selectedProduct.shippingCost">Costo de envio: {{vm.selectedProduct.shippingCost}}</span>
+                  <br ng-if="vm.selectedProduct.shippingCost">
+
+                  <span ng-if="vm.selectedProduct.inStoreAvailability">Disponibilidad: {{vm.selectedProduct.inStoreAvailability}}</span>
+                  <br ng-if="vm.selectedProduct.inStoreAvailability">
+                </div>
+                <div class="" layout="column">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </md-content>
   </md-sidenav>
 
-  </div>
+</div>
